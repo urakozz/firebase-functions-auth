@@ -1,6 +1,12 @@
 # firebase-functions-auth
 Small library for the Firebase Cloud Functions to validate and parse user made as an Express middleware
 
+# Install
+
+```shell script
+npm i -S firebase-functions-auth
+```
+
 # Example
 
 ### Cloud functions side
@@ -10,7 +16,7 @@ import * as admin from "firebase-admin";
 import * as express from "express";
 import * as cors from "cors";
 import * as cookieParser from "cookie-parser";
-import {validateFirebaseIdToken, WithUser} from "@urakozz/firebase-functions-auth";
+import {validateFirebaseIdToken, WithUser} from "firebase-functions-auth";
 
 admin.initializeApp();
 const app = express();
