@@ -10,10 +10,14 @@ export interface WithUser {
 }
 interface Config {
   enableLogs?: boolean
+  pathWhitelist?: Set<string>
 }
 export const validateFirebaseIdToken = (config: Config = {}) => {
 
   return async (req: Request & WithUser, res: Response, next: () => void) => {
+    if (config.pathWhitelist?.size > 0 && config.pathWhitelist.has(req.path)) {
+      return next();
+    }
     console.log('Check if request is authorized with Firebase ID token', req.headers, req.cookies);
 
     if ((!req.headers.authorization || !req.headers.authorization.startsWith('Bearer ')) &&
@@ -53,8 +57,7 @@ export const validateFirebaseIdToken = (config: Config = {}) => {
         console.log('ID Token correctly decoded', decodedIdToken);
       }
       req.user = decodedIdToken;
-      next();
-      return;
+      return next();
     } catch (error) {
       if (config.enableLogs) {
         console.error('Error while verifying Firebase ID token:', error);
