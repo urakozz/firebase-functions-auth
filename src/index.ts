@@ -11,6 +11,7 @@ export interface WithUser {
 interface Config {
   enableLogs?: boolean
   pathWhitelist?: Set<string>
+  useCustomAuth?: (req: Request) => admin.auth.DecodedIdToken
 }
 export const validateFirebaseIdToken = (config: Config = {}) => {
 
@@ -59,6 +60,13 @@ export const validateFirebaseIdToken = (config: Config = {}) => {
       req.user = decodedIdToken;
       return next();
     } catch (error) {
+      if (config.useCustomAuth) {
+        const idToken = config.useCustomAuth(req);
+        if (idToken) {
+          req.user = idToken;
+          return next();
+        }
+      }
       if (config.enableLogs) {
         console.error('Error while verifying Firebase ID token:', error);
       }
