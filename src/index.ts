@@ -41,6 +41,9 @@ export const validateFirebaseIdToken = (config: Config = {}) => {
     const userData: WithUser = {}
     try {
       const idToken = getIDToken(req, config.enableLogs)
+      if (!idToken) {
+        throw new Error("idToken is empty")
+      }
       const decodedIdToken = await admin.auth().verifyIdToken(idToken);
       if (config.enableLogs) {
         console.log('ID Token correctly decoded', decodedIdToken);
