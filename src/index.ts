@@ -12,7 +12,7 @@ export interface WithUser {
 interface Config {
   enableLogs?: boolean
   pathWhitelist?: Set<string>
-  useCustomAuth?: (req: Request) => Promise<admin.auth.UserRecord>
+  useCustomAuth?: (req: Request) => Promise<admin.auth.UserRecord | null>
 }
 export const validateFirebaseIdToken = (config: Config = {}) => {
 
