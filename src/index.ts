@@ -11,7 +11,7 @@ export interface WithUser {
 interface Config {
   enableLogs?: boolean
   pathWhitelist?: Set<string>
-  useCustomAuth?: (req: Request) => admin.auth.DecodedIdToken
+  useCustomAuth?: (req: Request) => Promise<admin.auth.DecodedIdToken>
 }
 export const validateFirebaseIdToken = (config: Config = {}) => {
 
@@ -61,7 +61,7 @@ export const validateFirebaseIdToken = (config: Config = {}) => {
       return next();
     } catch (error) {
       if (config.useCustomAuth) {
-        const idToken = config.useCustomAuth(req);
+        const idToken = await config.useCustomAuth(req);
         if (idToken) {
           req.user = idToken;
           return next();
