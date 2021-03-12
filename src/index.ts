@@ -53,10 +53,10 @@ export const validateFirebaseIdToken = (config: Config = {}) => {
       userData.user = user
     } catch (e) {
       if (config.enableLogs) {
-        console.log(`Error while verifying Firebase ID token: `, e);
+        console.log(`Error while verifying Firebase ID token: `, e.message);
       }
     }
-    if (config.useCustomAuth) {
+    if (!userData.user && config.useCustomAuth) {
       userData.user = await config.useCustomAuth(req);
       if (config.enableLogs) {
         console.log('Authorising with customAuth: ', userData.user ? "Success" : "Fail");
