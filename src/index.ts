@@ -6,12 +6,13 @@ import * as admin from "firebase-admin";
 import {Request, Response} from "express";
 
 export interface WithUser {
-  user?: admin.auth.DecodedIdToken;
+  decodedIdToken?: admin.auth.DecodedIdToken;
+  user?: admin.auth.UserRecord
 }
 interface Config {
   enableLogs?: boolean
   pathWhitelist?: Set<string>
-  useCustomAuth?: (req: Request) => Promise<admin.auth.DecodedIdToken>
+  useCustomAuth?: (req: Request) => Promise<admin.auth.UserRecord>
 }
 export const validateFirebaseIdToken = (config: Config = {}) => {
 
@@ -57,13 +58,15 @@ export const validateFirebaseIdToken = (config: Config = {}) => {
       if (config.enableLogs) {
         console.log('ID Token correctly decoded', decodedIdToken);
       }
-      req.user = decodedIdToken;
+      const user = await admin.auth().getUser(decodedIdToken.uid)
+      req.decodedIdToken = decodedIdToken;
+      req.user = user;
       return next();
     } catch (error) {
       if (config.useCustomAuth) {
-        const idToken = await config.useCustomAuth(req);
-        if (idToken) {
-          req.user = idToken;
+        const user = await config.useCustomAuth(req);
+        if (user) {
+          req.user = user;
           return next();
         }
       }
