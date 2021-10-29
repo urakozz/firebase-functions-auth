@@ -15,6 +15,7 @@
     "noImplicitAny": true,
     "suppressImplicitAnyIndexErrors": true,
     "noUnusedLocals": true,
+    "skipLibCheck": true,
     "experimentalDecorators": true
   },
   "exclude": [
