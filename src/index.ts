@@ -2,17 +2,17 @@
 // The Firebase ID token needs to be passed as a Bearer token in the Authorization HTTP header like this:
 // `Authorization: Bearer <Firebase ID Token>`.
 // when decoded successfully, the ID Token content will be added as `req.user`.
-import * as admin from "firebase-admin";
+import {UserRecord, DecodedIdToken, getAuth} from "firebase-admin/auth";
 import {Request, Response} from "express";
 
 export interface WithUser {
-  decodedIdToken?: admin.auth.DecodedIdToken;
-  user?: admin.auth.UserRecord
+  decodedIdToken?: DecodedIdToken;
+  user?: UserRecord
 }
 interface Config {
   enableLogs?: boolean
   pathWhitelist?: Set<string>
-  useCustomAuth?: (req: Request) => Promise<admin.auth.UserRecord | null>
+  useCustomAuth?: (req: Request) => Promise<UserRecord | null>
 }
 const getIDToken = (req: Request, enableLogs: boolean) => {
   if (req.headers.authorization?.startsWith('Bearer ')) {
@@ -44,11 +44,11 @@ export const validateFirebaseIdToken = (config: Config = {}) => {
       if (!idToken) {
         throw new Error("idToken is empty")
       }
-      const decodedIdToken = await admin.auth().verifyIdToken(idToken);
+      const decodedIdToken = await getAuth().verifyIdToken(idToken);
       if (config.enableLogs) {
         console.log('ID Token correctly decoded', decodedIdToken);
       }
-      const user = await admin.auth().getUser(decodedIdToken.uid)
+      const user = await getAuth().getUser(decodedIdToken.uid)
       userData.decodedIdToken = decodedIdToken
       userData.user = user
     } catch (e) {
