@@ -2,8 +2,8 @@
 // The Firebase ID token needs to be passed as a Bearer token in the Authorization HTTP header like this:
 // `Authorization: Bearer <Firebase ID Token>`.
 // when decoded successfully, the ID Token content will be added as `req.user`.
-import {UserRecord, DecodedIdToken, getAuth} from "firebase-admin/auth";
-import {Request, Response} from "express";
+import {type UserRecord, type DecodedIdToken, getAuth} from "firebase-admin/auth";
+import type {Request, Response} from "express";
 
 export interface WithUser {
   decodedIdToken?: DecodedIdToken;
