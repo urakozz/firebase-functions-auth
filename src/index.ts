@@ -31,8 +31,17 @@ const getIDToken = (req: Request, enableLogs: boolean) => {
 }
 export const validateFirebaseIdToken = (config: Config = {}) => {
   return async (req: Request & WithUser, res: Response, next: () => void) => {
-    if (config.pathWhitelist?.size > 0 && config.pathWhitelist.has(req.path)) {
-      return next();
+    if (config.pathWhitelist?.size > 0) {
+      if (config.pathWhitelist.has(req.path)) {
+        return next();
+      }
+      for (const path in config.pathWhitelist) {
+        if (path.endsWith("*")) {
+          if (req.path.startsWith(path.slice(0, -1))) {
+            return next();
+          }
+        }
+      }
     }
     if (config.enableLogs) {
       console.log('Check if request is authorized with Firebase ID token', req.headers, req.cookies);
