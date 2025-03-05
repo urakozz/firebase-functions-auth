@@ -35,7 +35,10 @@ export const validateFirebaseIdToken = (config: Config = {}) => {
       if (config.pathWhitelist.has(req.path)) {
         return next();
       }
-      for (const path in config.pathWhitelist) {
+      for (const path of Array.from(config.pathWhitelist)) {
+        if (config.enableLogs) {
+          console.log(`Found "${path}" ends with * ${path.endsWith("*")} testing ${req.path} against ${path.slice(0, -1)}: ${req.path.startsWith(path.slice(0, -1))}`);
+        }
         if (path.endsWith("*")) {
           if (req.path.startsWith(path.slice(0, -1))) {
             return next();
