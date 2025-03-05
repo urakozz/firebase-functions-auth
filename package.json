@@ -1,7 +1,7 @@
 {
   "name": "firebase-functions-auth",
   "description": "Small library for the Firebase Cloud Functions to validate and parse user made as an Express middleware",
-  "version": "4.0.1",
+  "version": "4.1.0",
   "devDependencies": {
     "typescript": "^5.3.3",
     "firebase-admin": "^13.0.0"
